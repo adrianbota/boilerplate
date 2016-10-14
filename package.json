@@ -30,7 +30,7 @@
     "gulp-postcss": "^6.2.0",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
-    "phantomjs": "^2.1.7",
+    "phantomjs-prebuilt": "^2.1.13",
     "webpack-stream": "^3.2.0"
   }
 }
