@@ -26,11 +26,11 @@
     "gulp-htmlmin": "^3.0.0",
     "gulp-imagemin": "^3.0.3",
     "gulp-jasmine-browser": "^1.7.0",
-    "gulp-jsmin": "^0.1.5",
     "gulp-less": "^3.1.0",
     "gulp-postcss": "^6.2.0",
+    "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.7",
-    "vinyl-paths": "^2.1.0",
+    "phantomjs": "^2.1.7",
     "webpack-stream": "^3.2.0"
   }
 }

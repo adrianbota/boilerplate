@@ -1,8 +1,7 @@
 var gulp = require('gulp');
-var vinylPaths = require('vinyl-paths');
 var del = require('del');
 var webpack = require('webpack-stream');
-var jsmin = require('gulp-jsmin');
+var uglify = require('gulp-uglify');
 var less = require('gulp-less');
 var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
@@ -20,7 +19,7 @@ var browserSync = require('browser-sync');
  * - skip .gitkeep
  */
 gulp.task('clean', function () {
-  return del([
+  return del.sync([
     'dist/**/*',
     'docs/**/*',
     '!dist/.gitkeep',
@@ -36,8 +35,8 @@ gulp.task('clean', function () {
  */
 gulp.task('js', function () {
   return gulp.src('src/js/main.js')
-    .pipe(webpack())
-    .pipe(jsmin())
+    .pipe(webpack({ output: { filename: 'main.js' }}))
+    .pipe(uglify())
     .pipe(gulp.dest('docs/js/'));
 });
 
@@ -69,7 +68,14 @@ gulp.task('css', function () {
 gulp.task('html', function () {
   return gulp.src('src/index.html')
     .pipe(fileinclude())
-    .pipe(htmlmin())
+    .pipe(htmlmin({
+      caseSensitive: true,
+      collapseWhitespace: true,
+      removeComments: true,
+      removeScriptTypeAttributes: true,
+      removeStyleLinkTypeAttributes: true,
+      useShortDoctype: true
+    }))
     .pipe(gulp.dest('docs/'));
 });
 
@@ -91,7 +97,7 @@ gulp.task('img', function () {
  */
 gulp.task('test', function () {
   return gulp.src('test/**/*-spec.js')
-    .pipe(webpack({ output: { filename: 'spec.js' }}))
+    .pipe(webpack())
     .pipe(jasmine.specRunner({ console: true }))
     .pipe(jasmine.headless());
 });
