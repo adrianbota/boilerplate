@@ -48,7 +48,8 @@
   "MISC_TASK": "misc",
   "MISC_SRC": [
     "src/robots.txt",
-    "src/favicon.*"
+    "src/favicon.*",
+    "src/CNAME"
   ],
   "MISC_DEST": "docs/",
 
