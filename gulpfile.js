@@ -1,16 +1,17 @@
-var gulp = require('gulp');
-var del = require('del');
-var webpack = require('webpack-stream');
-var uglify = require('gulp-uglify');
-var less = require('gulp-less');
-var postcss = require('gulp-postcss');
-var autoprefixer = require('autoprefixer');
-var cssnano = require('cssnano');
-var fileinclude = require('gulp-file-include');
-var htmlmin = require('gulp-htmlmin');
-var jasmine = require('gulp-jasmine-browser');
-var imagemin = require('gulp-imagemin');
-var browserSync = require('browser-sync');
+const gulp = require('gulp');
+const del = require('del');
+const webpack = require('webpack-stream');
+const uglify = require('gulp-uglify');
+const less = require('gulp-less');
+const postcss = require('gulp-postcss');
+const autoprefixer = require('autoprefixer');
+const cssnano = require('cssnano');
+const fileinclude = require('gulp-file-include');
+const htmlmin = require('gulp-htmlmin');
+const jasmine = require('gulp-jasmine-browser');
+const imagemin = require('gulp-imagemin');
+const browserSync = require('browser-sync');
+const config = require('./config.json');
 
 /**
  * Cleanup
@@ -18,13 +19,8 @@ var browserSync = require('browser-sync');
  * - delete `docs` folder contents
  * - skip .gitkeep
  */
-gulp.task('clean', function () {
-  return del.sync([
-    'dist/**/*',
-    'docs/**/*',
-    '!dist/.gitkeep',
-    '!docs/.gitkeep'
-  ]);
+gulp.task(config.CLEAN_TASK, function () {
+  return del.sync(config.CLEAN_SRC);
 });
 
 /**
@@ -33,11 +29,11 @@ gulp.task('clean', function () {
  * - minify
  * - copy
  */
-gulp.task('js', function () {
-  return gulp.src('src/js/main.js')
-    .pipe(webpack({ output: { filename: 'main.js' }}))
+gulp.task(config.JS_TASK, function () {
+  return gulp.src(config.JS_SRC)
+    .pipe(webpack(config.JS_BUNDLE_OPTIONS))
     .pipe(uglify())
-    .pipe(gulp.dest('docs/js/'));
+    .pipe(gulp.dest(config.JS_DEST));
 });
 
 /**
@@ -48,14 +44,14 @@ gulp.task('js', function () {
  * - copy
  * - stream
  */
-gulp.task('css', function () {
-  return gulp.src('src/less/main.less')
+gulp.task(config.CSS_TASK, function () {
+  return gulp.src(config.CSS_SRC)
     .pipe(less())
     .pipe(postcss([
-      autoprefixer({ browsers: ['last 2 versions'] }),
+      autoprefixer(config.CSS_AUTOPREFIX_OPTIONS),
       cssnano()
     ]))
-    .pipe(gulp.dest('docs/css/'))
+    .pipe(gulp.dest(config.CSS_DEST))
     .pipe(browserSync.stream());
 });
 
@@ -65,18 +61,11 @@ gulp.task('css', function () {
  * - minify
  * - copy
  */
-gulp.task('html', function () {
-  return gulp.src('src/index.html')
-    .pipe(fileinclude())
-    .pipe(htmlmin({
-      caseSensitive: true,
-      collapseWhitespace: true,
-      removeComments: true,
-      removeScriptTypeAttributes: true,
-      removeStyleLinkTypeAttributes: true,
-      useShortDoctype: true
-    }))
-    .pipe(gulp.dest('docs/'));
+gulp.task(config.HTML_TASK, function () {
+  return gulp.src(config.HTML_SRC)
+    .pipe(fileinclude(config.HTML_INCLUDE_OPTIONS))
+    .pipe(htmlmin(config.HTML_MIN_OPTIONS))
+    .pipe(gulp.dest(config.HTML_DEST));
 });
 
 /**
@@ -84,10 +73,18 @@ gulp.task('html', function () {
  * - compress
  * - copy
  */
-gulp.task('img', function () {
-  return gulp.src('src/img/**/*')
+gulp.task(config.IMG_TASK, function () {
+  return gulp.src(config.IMG_SRC)
     .pipe(imagemin())
-    .pipe(gulp.dest('docs/img/'));
+    .pipe(gulp.dest(config.IMG_DEST));
+});
+
+/**
+ * Anything else
+ */
+gulp.task(config.MISC_TASK, function () {
+  return gulp.src(config.MISC_SRC)
+    .pipe(gulp.dest(config.MISC_DEST));
 });
 
 /**
@@ -95,10 +92,10 @@ gulp.task('img', function () {
  * - bundle
  * - run
  */
-gulp.task('test', function () {
-  return gulp.src('test/**/*-spec.js')
+gulp.task(config.TEST_TASK, function () {
+  return gulp.src(config.TEST_SRC)
     .pipe(webpack())
-    .pipe(jasmine.specRunner({ console: true }))
+    .pipe(jasmine.specRunner(config.TEST_SPEC_OPTIONS))
     .pipe(jasmine.headless());
 });
 
@@ -109,7 +106,14 @@ gulp.task('test', function () {
  * - styles
  * - html
  */
-gulp.task('build', ['clean', 'js', 'css', 'html', 'img']);
+gulp.task(config.BUILD_TASK, [
+  config.CLEAN_TASK,
+  config.JS_TASK,
+  config.CSS_TASK,
+  config.HTML_TASK,
+  config.IMG_TASK,
+  config.MISC_TASK
+]);
 
 /**
  * Dev mode
@@ -117,17 +121,21 @@ gulp.task('build', ['clean', 'js', 'css', 'html', 'img']);
  * - server
  * - watch
  */
-gulp.task('dev', ['build'], function () {
-  browserSync.init({ server: 'docs/' });
-  gulp.watch('src/less/**/*.less', ['css']);
-  gulp.watch('src/js/**/*.js', ['js']).on('change', browserSync.reload);
-  gulp.watch('src/**/*.html', ['html']).on('change', browserSync.reload);
-  gulp.watch('src/img/**/*', ['img']).on('change', browserSync.reload);
+gulp.task(config.DEV_TASK, [config.BUILD_TASK], function () {
+  browserSync.init(config.DEV_OPTIONS);
+  gulp.watch(config.CSS_ANY_SRC, [config.CSS_TASK]);
+  gulp.watch(config.JS_ANY_SRC, [config.JS_TASK]).on('change', browserSync.reload);
+  gulp.watch(config.HTML_ANY_SRC, [config.HTML_TASK]).on('change', browserSync.reload);
+  gulp.watch(config.IMG_SRC, [config.IMG_TASK]).on('change', browserSync.reload);
+  gulp.watch(config.MISC_SRC, [config.MISC_TASK]).on('change', browserSync.reload);
 });
 
 /**
  * Default
- * - tests
+ * - run tests
  * - build
  */
-gulp.task('default', ['test', 'build']);
+gulp.task('default', [
+  config.TEST_TASK,
+  config.BUILD_TASK
+]);
