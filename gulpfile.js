@@ -13,6 +13,11 @@ const imagemin = require('gulp-imagemin');
 const browserSync = require('browser-sync');
 const config = require('./config.json');
 
+const distTaskFn = function () {
+  return gulp.src(config.DIST_SRC)
+    .pipe(gulp.dest(config.DIST_DEST));
+};
+
 /**
  * Cleanup
  * - delete `dist` folder contents
@@ -80,6 +85,12 @@ gulp.task(config.IMG_TASK, function () {
 });
 
 /**
+ * Distribution
+ * - copy built files
+ */
+gulp.task(config.DIST_TASK, distTaskFn);
+
+/**
  * Anything else
  */
 gulp.task(config.MISC_TASK, function () {
@@ -113,7 +124,7 @@ gulp.task(config.BUILD_TASK, [
   config.HTML_TASK,
   config.IMG_TASK,
   config.MISC_TASK
-]);
+], distTaskFn);
 
 /**
  * Dev mode
@@ -128,6 +139,7 @@ gulp.task(config.DEV_TASK, [config.BUILD_TASK], function () {
   gulp.watch(config.HTML_ANY_SRC, [config.HTML_TASK]).on('change', browserSync.reload);
   gulp.watch(config.IMG_SRC, [config.IMG_TASK]).on('change', browserSync.reload);
   gulp.watch(config.MISC_SRC, [config.MISC_TASK]).on('change', browserSync.reload);
+  gulp.watch(config.DIST_SRC, [config.DIST_TASK]);
 });
 
 /**

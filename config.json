@@ -45,6 +45,13 @@
   "IMG_SRC": "src/img/**/*",
   "IMG_DEST": "docs/img/",
 
+  "DIST_TASK": "dist",
+  "DIST_SRC": [
+    "docs/css/main.css",
+    "docs/js/main.js"
+  ],
+  "DIST_DEST": "dist/",
+
   "MISC_TASK": "misc",
   "MISC_SRC": [
     "src/robots.txt",
@@ -59,6 +66,7 @@
     "console": true
   },
 
+  "DOCS_TASK": "docs",
   "BUILD_TASK": "build",
 
   "DEV_TASK": "dev",
