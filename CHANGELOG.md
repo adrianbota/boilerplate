@@ -1,5 +1,5 @@
-### 0.0.0 (January 1, 2000)
+### 0.2.0 (October 30, 2016)
 
-* Foo
-* Bar
-* Baz
+* Pick up build system as dependency from npm
+* Test using istanbul and jasmine
+* Moved favicon to img
