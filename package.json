@@ -1,6 +1,6 @@
 {
   "name": "boilerplate",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Boilerplate for personal projects",
   "main": "src/js/main.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/adrianbota/boilerplate#readme",
   "devDependencies": {
-    "abota-build": "^0.1.0",
+    "abota-build": "^0.2.0",
     "istanbul": "^0.4.5",
     "jasmine": "^2.5.2"
   }
