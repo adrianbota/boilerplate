@@ -1,11 +1,10 @@
 {
   "name": "boilerplate",
-  "version": "0.2.2",
+  "version": "0.4.0",
+  "private": true,
   "description": "Boilerplate for personal projects",
   "main": "src/js/main.js",
-  "scripts": {
-    "test": "istanbul cover jasmine"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/adrianbota/boilerplate.git"
@@ -17,8 +16,6 @@
   },
   "homepage": "https://github.com/adrianbota/boilerplate#readme",
   "devDependencies": {
-    "abota-build": "^0.3.0",
-    "istanbul": "^0.4.5",
-    "jasmine": "^2.5.3"
+    "abota-build": "^0.5.1"
   }
 }
